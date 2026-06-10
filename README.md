@@ -1,43 +1,44 @@
-﻿# Knowledge RAG 鈥?浼佷笟绾ф櫤鑳界煡璇嗗簱绯荤粺
+# Knowledge RAG — 企业级智能知识库系统
 
-鍩轰簬 **FastAPI + Vue 3 + DeepSeek API + ChromaDB** 鐨勫叏鏍?RAG (妫€绱㈠寮虹敓鎴? 鐭ヨ瘑搴撳钩鍙般€傛敮鎸佹枃妗ｄ笂浼犱笌鑷姩瑙ｆ瀽銆佷袱绫诲垎绫荤鐞嗐€佹爣绛句綋绯汇€佹潵婧愬紩鐢ㄤ笌缃俊搴﹁瘎浼扮殑鏅鸿兘闂瓟锛屼互鍙婄煭鏈?闀挎湡鍙岃蹇嗘満鍒躲€?
-## 鍔熻兘姒傝
+基于 **FastAPI + Vue 3 + DeepSeek API + ChromaDB** 的全栈 RAG (检索增强生成) 知识库平台。支持文档上传与自动解析、两级分类管理、标签体系、来源引用与置信度评估的智能问答，以及短期/长期双记忆机制。
 
-| 妯″潡 | 鍔熻兘 |
+## 功能概览
+
+| 模块 | 功能 |
 |---|---|
-| 鐭ヨ瘑搴撶鐞?| 鍒涘缓銆佺紪杈戙€佸垹闄ょ煡璇嗗簱锛涘叕寮€ / 绉佹湁鍙鎬ф帶鍒?|
-| 鍒嗙被绠＄悊 | 涓ょ骇鍒嗙被鏍戯紝鏀寔鏂板缓銆佺紪杈戙€佸垹闄ゅ瓙鍒嗙被 |
-| 鏂囨。绠￠亾 | 涓婁紶 PDF / DOCX / TXT / MD / 鍥剧墖锛涜嚜鍔ㄨВ鏋愩€佸垎鍧椼€佸悜閲忓寲 |
-| 鏍囩绯荤粺 | 鑷敱鏍囩锛屾敮鎸佸瀵瑰鏂囨。鍏宠仈鍜屼氦鍙夌瓫閫?|
-| 鏅鸿兘闂瓟 | 鍩轰簬鐭ヨ瘑搴撶殑 RAG 闂瓟锛岄檮甯︽潵婧愬紩鐢ㄥ拰缃俊搴﹁瘎浼?|
-| 鐭湡璁板繂 | 浼氳瘽绐楀彛鍐呯殑涓婁笅鏂囧璇濊蹇嗭紙鍙厤缃疆鏁帮級 |
-| 闀挎湡璁板繂 | 瀵硅瘽鍘嗗彶鎸佷箙鍖栧瓨鍌紝鏀寔 Markdown 瀵煎嚭 |
-| 鐢ㄦ埛鍋忓ソ | 鍙厤缃殑璁板繂绐楀彛銆侀粯璁ょ煡璇嗗簱绛夊亸濂借缃?|
-| 鏉冮檺鎺у埗 | 澶氱敤鎴枫€丄dmin / User 瑙掕壊銆佺煡璇嗗簱鍙鎬ч殧绂?|
+| 知识库管理 | 创建、编辑、删除知识库；公开 / 私有可见性控制 |
+| 分类管理 | 两级分类树，支持新建、编辑、删除子分类 |
+| 文档管道 | 上传 PDF / DOCX / TXT / MD / 图片；自动解析、分块、向量化 |
+| 标签系统 | 自由标签，支持多对多文档关联和交叉筛选 |
+| 智能问答 | 基于知识库的 RAG 问答，附带来源引用和置信度评估 |
+| 短期记忆 | 会话窗口内的上下文对话记忆（可配置轮数） |
+| 长期记忆 | 对话历史持久化存储，支持 Markdown 导出 |
+| 用户偏好 | 可配置的记忆窗口、默认知识库等偏好设置 |
+| 权限控制 | 多用户、Admin / User 角色、知识库可见性隔离 |
 
-## 绯荤粺鏋舵瀯
+## 系统架构
 
 ```mermaid
 flowchart LR
-    subgraph Frontend["鍓嶇 (Vue 3 + Vite + Element Plus)"]
-        UI[Web 鐣岄潰]
+    subgraph Frontend["前端 (Vue 3 + Vite + Element Plus)"]
+        UI[Web 界面]
     end
 
-    subgraph Backend["鍚庣 (FastAPI)"]
-        Auth[JWT 璁よ瘉]
+    subgraph Backend["后端 (FastAPI)"]
+        Auth[JWT 认证]
         API[REST API]
-        DocSvc[鏂囨。鏈嶅姟]
-        QASvc[闂瓟鏈嶅姟]
-        MemSvc[璁板繂鏈嶅姟]
+        DocSvc[文档服务]
+        QASvc[问答服务]
+        MemSvc[记忆服务]
     end
 
-    subgraph Storage[瀛樺偍灞俔
-        SQLite[(SQLite 鍏崇郴鏁版嵁搴?]
-        Chroma[(ChromaDB 鍚戦噺鏁版嵁搴?]
-        Files[鏂囦欢瀛樺偍]
+    subgraph Storage[存储层]
+        SQLite[(SQLite 关系数据库)]
+        Chroma[(ChromaDB 向量数据库)]
+        Files[文件存储]
     end
 
-    subgraph External[澶栭儴鏈嶅姟]
+    subgraph External[外部服务]
         DeepSeek[DeepSeek API]
     end
 
@@ -56,53 +57,54 @@ flowchart LR
     API --> SQLite
 ```
 
-## 鎶€鏈爤
+## 技术栈
 
-| 灞傜骇 | 鎶€鏈€夊瀷 |
+| 层级 | 技术选型 |
 |---|---|
-| 鍚庣妗嗘灦 | FastAPI + Uvicorn |
-| 鍓嶇妗嗘灦 | Vue 3 + TypeScript + Vite |
-| UI 缁勪欢搴?| Element Plus + Pinia 鐘舵€佺鐞?|
-| 澶фā鍨?| DeepSeek API (chat + embedding) |
-| 鍚戦噺鏁版嵁搴?| ChromaDB (宓屽叆寮忔ā寮忥紝闆堕厤缃儴缃? |
-| 鍏崇郴鏁版嵁搴?| SQLite (鍙€氳繃 DATABASE_URL 涓€閿垏鎹?PostgreSQL) |
-| 璁よ瘉 | JWT (python-jose + bcrypt) |
-| 鏂囨。瑙ｆ瀽 | pdfplumber / python-docx / pytesseract (OCR) |
+| 后端框架 | FastAPI + Uvicorn |
+| 前端框架 | Vue 3 + TypeScript + Vite |
+| UI 组件库 | Element Plus + Pinia 状态管理 |
+| 大模型 | DeepSeek API (chat + embedding) |
+| 向量数据库 | ChromaDB (嵌入式模式，零配置部署) |
+| 关系数据库 | SQLite (可通过 DATABASE_URL 一键切换 PostgreSQL) |
+| 认证 | JWT (python-jose + bcrypt) |
+| 文档解析 | pdfplumber / python-docx / pytesseract (OCR) |
 
-## 蹇€熷紑濮?
-### 鐜瑕佹眰
+## 快速开始
+
+### 环境要求
 
 - Python 3.11+
 - Node.js 18+
-- DeepSeek API Key (鍙€?鈥?鏃?API Key 鏃剁郴缁熻嚜鍔ㄥ垏鎹负鍏抽敭璇嶆绱㈡ā寮?
+- DeepSeek API Key (可选 — 无 API Key 时系统自动切换为关键词检索模式)
 
-### 1. 鍏嬮殕椤圭洰
+### 1. 克隆项目
 
 ```bash
 git clone https://github.com/Zcj04/knowledge-rag.git
 cd knowledge-rag
 ```
 
-### 2. 鍚庣閰嶇疆
+### 2. 后端配置
 
 ```bash
-# 鍒涘缓铏氭嫙鐜
+# 创建虚拟环境
 python -m venv .venv
 
-# 婵€娲昏櫄鎷熺幆澧?(Windows)
+# 激活虚拟环境 (Windows)
 .venv\Scripts\activate
-# 婵€娲昏櫄鎷熺幆澧?(macOS / Linux)
+# 激活虚拟环境 (macOS / Linux)
 source .venv/bin/activate
 
-# 瀹夎渚濊禆
+# 安装依赖
 pip install -r backend/requirements.txt
 
-# 閰嶇疆鐜鍙橀噺
+# 配置环境变量
 cp .env.example .env
-# 缂栬緫 .env锛屽～鍐?DEEPSEEK_API_KEY锛堝彲閫夛紝寮€鍙戞ā寮忎笅涓嶅～涔熻兘鐢級
+# 编辑 .env，填写 DEEPSEEK_API_KEY（可选，开发模式下不填也能用）
 ```
 
-### 3. 鍓嶇閰嶇疆
+### 3. 前端配置
 
 ```bash
 cd frontend
@@ -110,93 +112,120 @@ npm install
 cd ..
 ```
 
-### 4. 鍚姩
+### 4. 启动
 
 ```bash
-# 缁堢 1 鈥?鍚姩鍚庣 (绔彛 8000)
+# 终端 1 — 启动后端 (端口 8000)
 cd backend
 uvicorn app.main:app --reload --port 8000
 
-# 缁堢 2 鈥?鍚姩鍓嶇 (绔彛 5173)
+# 终端 2 — 启动前端 (端口 5173)
 cd frontend
 npm run dev
 ```
 
-### 5. 浣跨敤
+### 5. 使用
 
-鎵撳紑娴忚鍣ㄨ闂?**http://localhost:5173** 鈫?娉ㄥ唽璐﹀彿 鈫?鍒涘缓鐭ヨ瘑搴?鈫?涓婁紶鏂囨。 鈫?寮€濮嬫彁闂€?
-## 椤圭洰缁撴瀯
+打开浏览器访问 **http://localhost:5173** → 注册账号 → 创建知识库 → 上传文档 → 开始提问。
+
+## 项目结构
 
 ```
 knowledge-rag/
-鈹溾攢鈹€ backend/
-鈹?  鈹溾攢鈹€ app/
-鈹?  鈹?  鈹溾攢鈹€ main.py                  # FastAPI 鍏ュ彛锛孋ORS锛岃矾鐢辨敞鍐?鈹?  鈹?  鈹溾攢鈹€ config.py                # 鐜鍙橀噺涓庨厤缃鐞?鈹?  鈹?  鈹溾攢鈹€ database.py              # SQLAlchemy 寮曟搸涓庝細璇?鈹?  鈹?  鈹溾攢鈹€ api/                     # 璺敱妯″潡
-鈹?  鈹?  鈹?  鈹溾攢鈹€ auth.py              # 娉ㄥ唽銆佺櫥褰曘€佸綋鍓嶇敤鎴?鈹?  鈹?  鈹?  鈹溾攢鈹€ kb.py                # 鐭ヨ瘑搴?CRUD + 鍒嗙被绠＄悊
-鈹?  鈹?  鈹?  鈹溾攢鈹€ document.py          # 鏂囨。涓婁紶銆佸垪琛ㄣ€佸垹闄ゃ€佹爣绛俱€佸垎绫?鈹?  鈹?  鈹?  鈹斺攢鈹€ qa.py                # 鏅鸿兘闂瓟銆佸璇濈鐞?鈹?  鈹?  鈹溾攢鈹€ core/
-鈹?  鈹?  鈹?  鈹溾攢鈹€ security.py          # JWT 鐢熸垚/鏍￠獙銆佸瘑鐮佸搱甯?鈹?  鈹?  鈹?  鈹斺攢鈹€ deps.py              # 渚濊禆娉ㄥ叆 (褰撳墠鐢ㄦ埛銆佺鐞嗗憳瀹堝崼)
-鈹?  鈹?  鈹溾攢鈹€ models/                  # SQLAlchemy ORM 妯″瀷
-鈹?  鈹?  鈹?  鈹溾攢鈹€ user.py              # 鐢ㄦ埛
-鈹?  鈹?  鈹?  鈹溾攢鈹€ knowledge_base.py    # 鐭ヨ瘑搴?鈹?  鈹?  鈹?  鈹溾攢鈹€ document.py          # 鏂囨。銆佹爣绛惧叧鑱?鈹?  鈹?  鈹?  鈹斺攢鈹€ conversation.py      # 浼氳瘽銆佹秷鎭?鈹?  鈹?  鈹溾攢鈹€ schemas/                 # Pydantic 璇锋眰/鍝嶅簲妯″瀷
-鈹?  鈹?  鈹斺攢鈹€ services/               # 涓氬姟閫昏緫灞?鈹?  鈹?      鈹溾攢鈹€ auth_service.py      # 璁よ瘉鏈嶅姟
-鈹?  鈹?      鈹溾攢鈹€ kb_service.py        # 鐭ヨ瘑搴撴湇鍔?鈹?  鈹?      鈹溾攢鈹€ document_service.py  # 鏂囨。瑙ｆ瀽銆佸垎鍧椼€佸悜閲忓寲銆佸叧閿瘝妫€绱?鈹?  鈹?      鈹溾攢鈹€ qa_service.py        # 妫€绱€佺敓鎴愩€佸紩鐢ㄧ粍瑁?鈹?  鈹?      鈹斺攢鈹€ memory_service.py    # 鐭湡/闀挎湡璁板繂绠＄悊
-鈹?  鈹溾攢鈹€ uploads/                     # 涓婁紶鏂囦欢瀛樺偍
-鈹?  鈹溾攢鈹€ chroma_data/                 # ChromaDB 鍚戦噺鎸佷箙鍖?鈹?  鈹斺攢鈹€ requirements.txt
-鈹溾攢鈹€ frontend/
-鈹?  鈹溾攢鈹€ src/
-鈹?  鈹?  鈹溾攢鈹€ views/
-鈹?  鈹?  鈹?  鈹溾攢鈹€ LoginView.vue             # 鐧诲綍/娉ㄥ唽椤?鈹?  鈹?  鈹?  鈹溾攢鈹€ DashboardView.vue         # 鐭ヨ瘑搴撳垪琛?(鍗＄墖缃戞牸)
-鈹?  鈹?  鈹?  鈹溾攢鈹€ KnowledgeBaseView.vue     # 鐭ヨ瘑搴撹鎯?(鏂囨。銆佸垎绫汇€佷笂浼?
-鈹?  鈹?  鈹?  鈹溾攢鈹€ QAChatView.vue            # 闂瓟瀵硅瘽椤?(鍚紩鐢ㄩ潰鏉?
-鈹?  鈹?  鈹?  鈹斺攢鈹€ HistoryView.vue           # 瀵硅瘽鍘嗗彶
-鈹?  鈹?  鈹溾攢鈹€ components/
-鈹?  鈹?  鈹?  鈹斺攢鈹€ layout/AppLayout.vue      # 渚ц竟鏍?+ 涓诲竷灞€
-鈹?  鈹?  鈹溾攢鈹€ stores/                       # Pinia 鐘舵€佺鐞?鈹?  鈹?  鈹?  鈹溾攢鈹€ auth.ts                   # 璁よ瘉鐘舵€?鈹?  鈹?  鈹?  鈹溾攢鈹€ kb.ts                     # 鐭ヨ瘑搴撶姸鎬?鈹?  鈹?  鈹?  鈹斺攢鈹€ chat.ts                   # 瀵硅瘽鐘舵€?鈹?  鈹?  鈹溾攢鈹€ api/client.ts                 # Axios 灏佽 (JWT 鎷︽埅鍣?
-鈹?  鈹?  鈹斺攢鈹€ router/index.ts              # Vue Router 璺敱閰嶇疆
-鈹?  鈹溾攢鈹€ package.json
-鈹?  鈹斺攢鈹€ vite.config.ts
-鈹溾攢鈹€ .env.example
-鈹溾攢鈹€ .gitignore
-鈹斺攢鈹€ README.md
+├── backend/
+│   ├── app/
+│   │   ├── main.py                  # FastAPI 入口，CORS，路由注册
+│   │   ├── config.py                # 环境变量与配置管理
+│   │   ├── database.py              # SQLAlchemy 引擎与会话
+│   │   ├── api/                     # 路由模块
+│   │   │   ├── auth.py              # 注册、登录、当前用户
+│   │   │   ├── kb.py                # 知识库 CRUD + 分类管理
+│   │   │   ├── document.py          # 文档上传、列表、删除、标签、分类
+│   │   │   └── qa.py                # 智能问答、对话管理
+│   │   ├── core/
+│   │   │   ├── security.py          # JWT 生成/校验、密码哈希
+│   │   │   └── deps.py              # 依赖注入 (当前用户、管理员守卫)
+│   │   ├── models/                  # SQLAlchemy ORM 模型
+│   │   │   ├── user.py              # 用户
+│   │   │   ├── knowledge_base.py    # 知识库
+│   │   │   ├── document.py          # 文档、标签关联
+│   │   │   └── conversation.py      # 会话、消息
+│   │   ├── schemas/                 # Pydantic 请求/响应模型
+│   │   └── services/               # 业务逻辑层
+│   │       ├── auth_service.py      # 认证服务
+│   │       ├── kb_service.py        # 知识库服务
+│   │       ├── document_service.py  # 文档解析、分块、向量化、关键词检索
+│   │       ├── qa_service.py        # 检索、生成、引用组装
+│   │       └── memory_service.py    # 短期/长期记忆管理
+│   ├── uploads/                     # 上传文件存储
+│   ├── chroma_data/                 # ChromaDB 向量持久化
+│   └── requirements.txt
+├── frontend/
+│   ├── src/
+│   │   ├── views/
+│   │   │   ├── LoginView.vue             # 登录/注册页
+│   │   │   ├── DashboardView.vue         # 知识库列表 (卡片网格)
+│   │   │   ├── KnowledgeBaseView.vue     # 知识库详情 (文档、分类、上传)
+│   │   │   ├── QAChatView.vue            # 问答对话页 (含引用面板)
+│   │   │   └── HistoryView.vue           # 对话历史
+│   │   ├── components/
+│   │   │   └── layout/AppLayout.vue      # 侧边栏 + 主布局
+│   │   ├── stores/                       # Pinia 状态管理
+│   │   │   ├── auth.ts                   # 认证状态
+│   │   │   ├── kb.ts                     # 知识库状态
+│   │   │   └── chat.ts                   # 对话状态
+│   │   ├── api/client.ts                 # Axios 封装 (JWT 拦截器)
+│   │   └── router/index.ts              # Vue Router 路由配置
+│   ├── package.json
+│   └── vite.config.ts
+├── .env.example
+├── .gitignore
+└── README.md
 ```
 
-## API 姒傝
+## API 概览
 
-| 鏂规硶 | 璺緞 | 璇存槑 |
+| 方法 | 路径 | 说明 |
 |---|---|---|
-| POST | `/api/auth/register` | 娉ㄥ唽鏂扮敤鎴?|
-| POST | `/api/auth/login` | 鐧诲綍锛岃繑鍥?JWT Token |
-| GET | `/api/auth/me` | 鑾峰彇褰撳墠鐢ㄦ埛淇℃伅 |
-| GET | `/api/kb` | 鑾峰彇鐭ヨ瘑搴撳垪琛?|
-| POST | `/api/kb` | 鍒涘缓鐭ヨ瘑搴?|
-| GET | `/api/kb/{id}` | 鑾峰彇鐭ヨ瘑搴撹鎯?(鍚垎绫绘爲) |
-| PUT | `/api/kb/{id}` | 鏇存柊鐭ヨ瘑搴?|
-| DELETE | `/api/kb/{id}` | 鍒犻櫎鐭ヨ瘑搴?|
-| GET | `/api/kb/{id}/categories` | 鑾峰彇鍒嗙被鍒楄〃 (鏍戝舰) |
-| POST | `/api/kb/{id}/categories` | 鍒涘缓鍒嗙被 |
-| POST | `/api/kb/{id}/documents/upload` | 涓婁紶鏂囨。 |
-| GET | `/api/kb/{id}/documents` | 鏂囨。鍒楄〃 (鏀寔绛涢€? |
-| PUT | `/api/kb/{id}/documents/{did}/category` | 鏇存柊鏂囨。鍒嗙被 |
-| PUT | `/api/kb/{id}/documents/{did}/tags` | 鏇存柊鏂囨。鏍囩 |
-| POST | `/api/qa/ask` | 鎻愰棶 (RAG 闂瓟) |
-| GET | `/api/qa/conversations` | 鑾峰彇瀵硅瘽鍘嗗彶鍒楄〃 |
-| GET | `/api/qa/conversations/{id}` | 鑾峰彇瀵硅瘽娑堟伅 |
-| DELETE | `/api/qa/conversations/{id}` | 鍒犻櫎瀵硅瘽 |
-| GET | `/api/qa/conversations/{id}/export` | 瀵煎嚭瀵硅瘽涓?Markdown |
+| POST | `/api/auth/register` | 注册新用户 |
+| POST | `/api/auth/login` | 登录，返回 JWT Token |
+| GET | `/api/auth/me` | 获取当前用户信息 |
+| GET | `/api/kb` | 获取知识库列表 |
+| POST | `/api/kb` | 创建知识库 |
+| GET | `/api/kb/{id}` | 获取知识库详情 (含分类树) |
+| PUT | `/api/kb/{id}` | 更新知识库 |
+| DELETE | `/api/kb/{id}` | 删除知识库 |
+| GET | `/api/kb/{id}/categories` | 获取分类列表 (树形) |
+| POST | `/api/kb/{id}/categories` | 创建分类 |
+| POST | `/api/kb/{id}/documents/upload` | 上传文档 |
+| GET | `/api/kb/{id}/documents` | 文档列表 (支持筛选) |
+| PUT | `/api/kb/{id}/documents/{did}/category` | 更新文档分类 |
+| PUT | `/api/kb/{id}/documents/{did}/tags` | 更新文档标签 |
+| POST | `/api/qa/ask` | 提问 (RAG 问答) |
+| GET | `/api/qa/conversations` | 获取对话历史列表 |
+| GET | `/api/qa/conversations/{id}` | 获取对话消息 |
+| DELETE | `/api/qa/conversations/{id}` | 删除对话 |
+| GET | `/api/qa/conversations/{id}/export` | 导出对话为 Markdown |
 
-## 璁捐瑕佺偣
+## 设计要点
 
-- **ChromaDB 宓屽叆寮忔ā寮?*锛氶浂閰嶇疆鍚戦噺瀛樺偍锛屾棤闇€鍗曠嫭閮ㄧ讲鍚戦噺鏁版嵁搴撴湇鍔★紝鏁版嵁鐩存帴鎸佷箙鍖栧埌 `backend/chroma_data/`銆?- **鍏抽敭璇嶆绱㈤檷绾?*锛氭湭閰嶇疆 DeepSeek API Key 鏃讹紝绯荤粺鑷姩鍒囨崲涓?CJK 浜屽厓缁?+ 鍗曡瘝閲嶅彔鐨勫叧閿瘝妫€绱㈡柟妗堬紝纭繚寮€鍙戞ā寮忎笅闂瓟鍔熻兘浠嶇劧鍙敤銆?- **纭畾鎬у搱甯屽悜閲?*锛堥檷绾ф柟妗堬級锛氭棤 Embedding API 鏃讹紝瀵规枃鏈潡杩涜 SHA-256 鍝堝笇鐢熸垚纭畾鎬у悜閲忥紝涓嶄緷璧栧閮ㄦ湇鍔″嵆鍙畬鎴愬熀鏈绱€?- **璺緞鑴辩 CWD**锛氭暟鎹簱銆丆hromaDB 鍜屼笂浼犵洰褰曠殑璺緞鍧囦互 `config.py` 鎵€鍦ㄤ綅缃В鏋愶紝涓嶅彈 `uvicorn` 鍚姩鐩綍褰卞搷銆?- **SQLite 榛樿锛孭ostgreSQL 鍙垏鎹?*锛氫慨鏀?`DATABASE_URL` 鍗冲彲鍒囨崲鑷充换浣?SQLAlchemy 鏀寔鐨勬暟鎹簱锛岃〃缁撴瀯瀹屽叏鐢?ORM 瀹氫箟锛屾棤鎵嬪啓 SQL銆?
-## 鐜鍙橀噺
+- **ChromaDB 嵌入式模式**：零配置向量存储，无需单独部署向量数据库服务，数据直接持久化到 `backend/chroma_data/`。
+- **关键词检索降级**：未配置 DeepSeek API Key 时，系统自动切换为 CJK 二元组 + 单词重叠的关键词检索方案，确保开发模式下问答功能仍然可用。
+- **确定性哈希向量**（降级方案）：无 Embedding API 时，对文本块进行 SHA-256 哈希生成确定性向量，不依赖外部服务即可完成基本检索。
+- **路径脱离 CWD**：数据库、ChromaDB 和上传目录的路径均以 `config.py` 所在位置解析，不受 `uvicorn` 启动目录影响。
+- **SQLite 默认，PostgreSQL 可切换**：修改 `DATABASE_URL` 即可切换至任何 SQLAlchemy 支持的数据库，表结构完全由 ORM 定义，无手写 SQL。
 
-| 鍙橀噺 | 蹇呭～ | 榛樿鍊?| 璇存槑 |
+## 环境变量
+
+| 变量 | 必填 | 默认值 | 说明 |
 |---|---|---|---|
-| `DEEPSEEK_API_KEY` | 鍚?| (绌? | DeepSeek API 瀵嗛挜锛岀敤浜?LLM 瀵硅瘽鍜屽悜閲忓祵鍏?|
-| `SECRET_KEY` | 鍚?| `change-me-...` | JWT 绛惧悕瀵嗛挜 (鐢熶骇鐜鍔″繀淇敼) |
-| `DATABASE_URL` | 鍚?| `sqlite:///./knowledge_rag.db` | 鏁版嵁搴撹繛鎺ュ瓧绗︿覆 |
-| `CORS_ORIGINS` | 鍚?| `["http://localhost:5173"]` | 鍏佽鐨勮法鍩熸潵婧?|
-| `CHUNK_SIZE` | 鍚?| `512` | 鏂囨。鍒嗗潡澶у皬 |
-| `RETRIEVAL_TOP_K` | 鍚?| `5` | 姣忔妫€绱㈣繑鍥炵殑鐗囨鏁伴噺 |
+| `DEEPSEEK_API_KEY` | 否 | (空) | DeepSeek API 密钥，用于 LLM 对话和向量嵌入 |
+| `SECRET_KEY` | 否 | `change-me-...` | JWT 签名密钥 (生产环境务必修改) |
+| `DATABASE_URL` | 否 | `sqlite:///./knowledge_rag.db` | 数据库连接字符串 |
+| `CORS_ORIGINS` | 否 | `["http://localhost:5173"]` | 允许的跨域来源 |
+| `CHUNK_SIZE` | 否 | `512` | 文档分块大小 |
+| `RETRIEVAL_TOP_K` | 否 | `5` | 每次检索返回的片段数量 |
 
-## 寮€婧愬崗璁?
+## 开源协议
+
 MIT
